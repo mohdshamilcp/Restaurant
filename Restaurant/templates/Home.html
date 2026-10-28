@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restaurant</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: "Comic Sans MS", cursive; color: #25372c; }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 8% 8%;
+      color: white;
+      background:
+        linear-gradient(rgba(20, 35, 25, .48), rgba(20, 35, 25, .48)),
+        url("{% static 'myapp/images/food.jpg' %}") center / cover no-repeat;)
+    }
+
+    nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: 100%;
+      padding: 8px 5%;
+      background: transparent;
+    }
+
+    .brand {
+  font-family: Georgia, serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: #f3d28b;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 2px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 14px 16px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { text-decoration: underline; }
+
+    .nav-phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: white;
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+
+    .nav-phone svg { width: 18px; height: 18px; fill: currentColor; }
+    .hero-content { max-width: 600px; }
+    #welcome-text { min-height: 1.5em; font-size: 20px; }
+
+    .hero h1 {
+      font-family: "Comic Sans MS", cursive;
+      font-size: clamp(42px, 7vw, 50px);
+      margin: 0 0 16px;
+    }
+
+    .hero p { font-size: 18px; line-height: 1.6; margin-bottom: 26px; }
+
+    .button, button {
+      display: inline-block;
+      padding: 13px 22px;
+      border: 0;
+      border-radius: 8px;
+      background: #25372c;
+      color: black;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .button { background: floralwhite; }
+
+    .page-section {
+      min-height: 75vh;
+      padding: 90px 8%;
+      scroll-margin-top: 20px;
+    }
+
+    .page-section h2 {
+      margin-top: 0;
+      font: bold clamp(36px, 5vw, 56px) Georgia, serif;
+    }
+
+    .section-intro { max-width: 650px; color: #59685e; line-height: 1.7; }
+    #menu, #gallery, #reservation, #end{ background: #fffefa; }
+    #about, #location, #feedback { background: #f3f1e8; }
+
+
+    #menu > h2,
+    #about > h2,
+    #gallery > h2,
+    #location > h2,
+    #end >h2,h3{
+      text-align: center;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 300px));
+      justify-content: center;
+      gap: 16px;
+      margin: 30px auto 0;
+    }
+
+    .menu-item {
+      padding: 16px;
+      background: white;
+      border: 1px solid #e5e3d9;
+      border-radius: 8px;
+    }
+
+    .menu-image {
+      display: block;
+      width: 100%;
+      height: 190px;
+      object-fit: contain;
+      margin-bottom: 17px;
+      border-radius: 5px;
+    }
+
+    .menu-item-top { display: flex; justify-content: space-between; gap: 15px; }
+    .menu-item h3 { margin: 0; }
+    .menu-item p { margin-bottom: 0; color: #59685e; line-height: 1.55; }
+    .price { font-weight: bold; white-space: nowrap; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .gallery-grid img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #e5e3d9;
+    }
+
+    .location-card {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+      max-width: 850px;
+      padding: 28px;
+      background: white;
+      border: 1px solid #e5e3d9;
+      border-radius: 8px;
+      line-height: 1.7;
+        margin: 0 auto;
+
+    }
+
+    .location-card h3 { margin-top: 0; }
+    .location-card a { color: #315c45; font-weight: bold; }
+
+    .form-card {
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 28px;
+      background: white;
+      border: 1px solid #e5e3d9;
+      border-radius: 8px;
+    }
+
+    #reservation > h2,
+    #reservation > .section-intro,
+    #feedback > h2,
+    #feedback > .section-intro
+    {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .form-row { margin-bottom: 18px; }
+
+    .form-row label,
+    .form-label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #b9c0b8;
+      border-radius: 5px;
+      font: inherit;
+      color: #25372c;
+      background: white;
+    }
+
+    #about p {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    textarea { min-height: 120px; resize: vertical; }
+
+    .rating {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .rating input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+    .rating label {
+      color: #b8b8b0;
+      font-size: 34px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .rating label:hover,
+    .rating label:hover ~ label,
+    .rating input:checked ~ label { color: #d49a24; }
+
+    .rating input:focus-visible + label {
+      outline: 2px solid #25372c;
+      outline-offset: 2px;
+    }
+
+     footer {
+            padding: 20px 0;
+            background: #fffefa;
+            color: black;
+            text-align: center;
+        }
+
+        .social-links {
+            margin-top: 10px;
+        }
+
+        .social-links img {
+            width: 28px;
+            height: 28px;
+            margin: 5px;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+
+
+
+    @media (max-width: 650px) {
+      nav { padding: 8px 3%; align-items: flex-start; flex-direction: column; gap: 4px; }
+      .nav-right { width: 100%; justify-content: space-between; gap: 5px; }
+      .brand { font-size: 21px; }
+      .nav-links { justify-content: flex-start; }
+      .nav-links a { padding: 10px 9px; font-size: 14px; }
+      .hero { min-height: 100vh; }
+      .page-section { padding: 75px 7%; }
+      .menu-grid, .gallery-grid, .location-card { grid-template-columns: 1fr; }
+      .gallery-grid img { height: 220px; }
+      .form-card { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="hero" id="home">
+      <nav aria-label="Main navigation">
+        <a class="brand" href="#home">The Capital Restaurant</a>
+
+        <div class="nav-right">
+          <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#location">Location</a></li>
+            <li><a href="#reservation">Reserve</a></li>
+            <li><a href="#feedback">Feedback</a></li>
+          </ul>
+
+          <a class="nav-phone" href="tel:+15551234567">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.56 3.58.56a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.61 21 3 13.39 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.19 2.46.56 3.58a1 1 0 0 1-.25 1.01l-2.19 2.2z"/>
+            </svg>
+            <span>+1 (555) 123-4567</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="hero-content">
+        <p id="welcome-text"></p>
+        <h1>Fresh food, warm moments.</h1>
+        <p> Join us for a meal and make yourself at home.</p>
+        <a class="button" href="#menu">Explore our menu</a>
+      </div>
+    </section>
+
+    <section class="page-section" id="menu">
+      <h2>Our Menu</h2>
+
+
+      <div class="menu-grid">
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/soup.jpg' %}" alt="soup">
+          <div class="menu-item-top"><h3>Soup</h3><span class="price">$9</span></div>
+          <p>Slow-roasted tomatoes, fresh basil, and toasted sourdough.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/salad.jpg' %}" alt="Fresh garden salad">
+          <div class="menu-item-top"><h3>Garden Market Salad</h3><span class="price">$14</span></div>
+          <p>Seasonal greens, crisp apple, toasted seeds, and house vinaigrette.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/chicken.jpg' %}" alt="Herb-roasted chicken">
+          <div class="menu-item-top"><h3>Herb-Roasted Chicken</h3><span class="price">$24</span></div>
+          <p>Roasted chicken with seasonal vegetables and pan jus.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/mushroom.jpg' %}" alt="Wild mushroom pasta">
+          <div class="menu-item-top"><h3>Wild Mushroom Pasta</h3><span class="price">$21</span></div>
+          <p>Hand-cut pasta, wild mushrooms, parmesan, and fresh thyme.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/sandwich.jpg' %}" alt="Grilled cheese sandwich">
+          <div class="menu-item-top"><h3>Grilled Cheese Sandwich</h3><span class="price">$12</span></div>
+          <p>Toasted sourdough, melted cheese, served with a small salad.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/frenchfries.jpg' %}" alt="Golden french fries">
+          <div class="menu-item-top"><h3>Golden French Fries</h3><span class="price">$7</span></div>
+          <p>Crispy fries with house seasoning and dipping sauce.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/burger.jpg' %}" alt="Restaurant cheeseburger">
+          <div class="menu-item-top"><h3>Classic Cheeseburger</h3><span class="price">$17</span></div>
+          <p>Beef patty, cheddar, lettuce, tomato, and house sauce.</p>
+        </article>
+
+        <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/steak.jpg' %}" alt="Steak">
+          <div class="menu-item-top"><h3>Steak</h3><span class="price">$25</span></div>
+          <p>Tender, perfectly seared steak served with seasonal vegetables and our house-made sauce.</p>
+        </article>
+
+          <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/turkey.jpg' %}" alt="Turkey">
+          <div class="menu-item-top"><h3>Turkey</h3><span class="price">$25</span></div>
+          <p>Tender, slow-roasted turkey served with savory herbs and seasonal vegetables..</p>
+        </article>
+
+          <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/friedrice.jpg' %}" alt="friedrice">
+          <div class="menu-item-top"><h3>Fried Rice</h3><span class="price">$10</span></div>
+          <p>Light citrus cake served with cream and seasonal berries.</p>
+        </article>
+
+          <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/noodles.jpg' %}" alt="noodles">
+          <div class="menu-item-top"><h3>Noodles</h3><span class="price">$14</span></div>
+          <p>Tender noodles tossed with fresh vegetables and a flavorful house-made sauce..</p>
+        </article>
+
+          <article class="menu-item">
+          <img class="menu-image" src="{% static 'myapp/images/lobster.jpg' %}" alt="lobster">
+          <div class="menu-item-top"><h3>Lobster</h3><span class="price">$10</span></div>
+          <p>Butter-Seared Lobster — Tender lobster prepared with rich herb butter and served with fresh seasonal sides..</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="page-section" id="about">
+      <h2>About Us</h2>
+      <p class="section-intro">Welcome to our Restaurant, where classic hospitality meets a premium dining experience. Step into a warm, elegant setting with thoughtful details, comfortable seating, and a relaxed atmosphere suited to special occasions and everyday meals alike. Our kitchen prepares every dish with care, using fresh, high-quality ingredients selected for their flavor and quality. From the first bite to the final course, we want every visit to feel welcoming, memorable, and worth savoring.
+          <br>Thank you & Enjoy..</p>
+    </section>
+
+    <section class="page-section" id="gallery">
+      <h2>Gallery</h2>
+
+      <div class="gallery-grid">
+        <img src="{% static 'myapp/images/cook.jpg' %}" alt="Inside the restaurant">
+        <img src="{% static 'myapp/images/restaurant.jpg' %}" alt="Restaurant dining room">
+        <img src="{% static 'myapp/images/chef.jpg' %}" alt="Chef preparing a dish">
+        <img src="{% static 'myapp/images/table.jpg' %}" alt="Fresh seasonal salad">
+        <img src="{% static 'myapp/images/food.jpg' %}" alt="A restaurant main course">
+        <img src="{% static 'myapp/images/dessert.jpg' %}" alt="Restaurant dessert">
+      </div>
+    </section>
+
+    <section class="page-section" id="location">
+      <h2>Visit Us</h2>
+
+      <div class="location-card">
+        <div>
+          <h3>Address</h3>
+          <p>123 Market Street<br>California, State 12345</p>
+          <a href="https://maps.google.com/?q=123+Market+Street" target="_blank" rel="noopener">Get directions on Google Maps ↗</a>
+        </div>
+        <div>
+          <h3>Opening hours</h3>
+          <p>Monday–Saturday: 11:00 AM – 10:00 PM<br>Sunday: 12:00 PM – 8:00 PM</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section" id="reservation">
+      <h2>Make a Reservation</h2>
+      <p class="section-intro">Choose a date and arrival time for your booking.</p>
+
+      <form class="form-card" action="{% url 'home' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="reservation">
+
+        <div class="form-row">
+          <label for="reservation-name">Name</label>
+          <input id="reservation-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="form-row">
+          <label for="reservation-phone">Phone number</label>
+          <input id="reservation-phone" name="phone" type="tel" autocomplete="tel" required>
+        </div>
+        <div class="form-row">
+          <label for="reservation-date">Date</label>
+          <input id="reservation-date" name="date" type="date" required>
+        </div>
+        <div class="form-row">
+          <label for="reservation-time">Time</label>
+          <select id="reservation-time" name="time" required>
+            <option value="">Choose a time</option>
+            <option>11:30 AM</option>
+            <option>12:00 PM</option>
+            <option>12:30 PM</option>
+            <option>1:00 PM</option>
+            <option>5:30 PM</option>
+            <option>6:00 PM</option>
+            <option>6:30 PM</option>
+            <option>7:00 PM</option>
+            <option>7:30 PM</option>
+            <option>8:00 PM</option>
+          </select>
+        </div>
+        <button type="submit">Reserve</button>
+      </form>
+    </section>
+
+    <section class="page-section" id="feedback">
+      <h2>Leave Feedback</h2>
+      <p class="section-intro">Tell us about your visit and rate your experience.</p>
+
+      <form class="form-card" action="{% url 'home' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="feedback">
+
+        <div class="form-row">
+          <label for="feedback-type">Feedback type</label>
+          <select id="feedback-type" name="feedback_type" required>
+            <option value="">Choose a type</option>
+            <option value="compliment">Compliment</option>
+            <option value="suggestion">Suggestion</option>
+            <option value="issue">Report an issue</option>
+          </select>
+        </div>
+
+        <fieldset class="form-row" style="border: 0; padding: 0; margin-left: 0;">
+          <legend class="form-label">Your rating</legend>
+          <div class="rating" aria-label="Choose a star rating">
+            <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+            <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+          </div>
+        </fieldset>
+
+        <div class="form-row">
+          <label for="feedback-message">Your feedback</label>
+          <textarea id="feedback-message" name="message" placeholder="Write your feedback here..." required></textarea>
+        </div>
+        <button type="submit">Send Feedback</button>
+      </form>
+    </section>
+
+      <section class="page-section" id="end">
+      <h2>ThankYou</h2>
+          <h3>Visit Again</h3>
+    </section>
+  </main>
+
+  <script>
+    const message = "Welcome";
+    const heading = document.getElementById("welcome-text");
+    index = 0;
+
+    function typeText() {
+      if (index < message.length) {
+        heading.textContent += message[index];
+        index++;
+        setTimeout(typeText, 90);
+      }
+    }
+
+    typeText();
+  </script>
+<footer>
+        <div class="container">
+            <p>&copy; 2025 The Capital Restaurant. All rights reserved.</p>
+
+            <div class="social-links">
+                <a href="#" aria-label="Facebook">
+                    <img src="{% static 'myapp/images/fb.png' %}" alt="Facebook">
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <img src="{% static 'myapp/images/insta.png' %}" alt="Instagram">
+                </a>
+                <a href="#" aria-label="Twitter">
+                    <img src="{% static 'myapp/images/x.png' %}" alt="Twitter">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
